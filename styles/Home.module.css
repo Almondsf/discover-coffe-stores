@@ -28,6 +28,7 @@
 
 .card {
   justify-content: center;
+  object-fit: cover;
 }
 
 .heading2 {
