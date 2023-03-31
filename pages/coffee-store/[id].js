@@ -37,7 +37,7 @@ export async function getStaticPaths() {
 }
 
 const coffeStore = (props) => {
-  const {name, address, neighbourhood, imgUrl} = props.coffeeStore
+  const {name, location, neighbourhood, imgUrl} = props.coffeeStore
 // console.log("guy", props.coffeStore)
   const Router = useRouter()
   if(Router.isFallback){
@@ -66,12 +66,12 @@ const coffeStore = (props) => {
         <div className={cls("glass", styles.col2)}>
           <div className={styles.iconWrapper}>
             <Image src="/static/icons/places.svg" width="24" height="24" alt='location'></Image>
-            <p className={styles.text}>{address}</p>
+            <p className={styles.text}>{location.address}</p>
           </div>
-          <div className={styles.iconWrapper}>
+          {location.locality && <div className={styles.iconWrapper}>
             <Image src="/static/icons/nearMe.svg" width="24" height="24" alt=''></Image>
-            <p className={styles.text}>{neighbourhood}</p>
-          </div>
+            <p className={styles.text}>{location.locality}</p>
+          </div>}
           <div className={styles.iconWrapper}>
             <Image src="/static/icons/star.svg" width="24" height="24" alt=''></Image>
             <p className={styles.text}>1</p>

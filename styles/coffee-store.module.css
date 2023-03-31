@@ -87,7 +87,7 @@
     padding-right: 0.5rem /* 8px */;
     padding-top: 0.5rem /* 8px */;
     padding-bottom: 0.5rem /* 8px */;
-  
+    outline: 0px;
     background-color: var(--text-purple-dark);
     cursor: pointer;
     color: white;
