@@ -34,12 +34,15 @@ export default function Home(props) {
     const fetchData = async () => {
       if (latLong) {
         try {
-          const fetchedCoffeeStores = await fetchCoffeeStores(latLong, 30);
+          const response = await fetch(
+            `/api/getCoffeeStoresByLocation?latLong=${latLong}&limit=30`
+          );
+          const coffeeStores = await response.json();
 
           // console.log('hey', coffeeStores);
           dispatch({
             type: ACTION_TYPES.SET_COFFEE_STORES,
-            payload: { coffeeStores: fetchedCoffeeStores },
+            payload: { coffeeStores },
           });
         } catch (error) {
           // Handle the error accordingly
@@ -57,13 +60,13 @@ export default function Home(props) {
   const handleOnBannerBtnClick = () => {
     handleTrackLocation();
   };
-  if (isFinding) {
-    return <div>Loading...</div>;
-  }
+  // if (isFinding) {
+  //   return <div>Loading...</div>;
+  // }
   return (
     <div className={styles.container}>
       <Head>
-        <title>Coffee Connoisseur</title>
+        <title>Coffee Compass</title>
         <link rel="icon" href="/favicon.ico" />
         <meta
           name="description"

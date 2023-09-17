@@ -43,7 +43,7 @@ const CoffeeStore = (props) => {
   const { id } = router.query;
 
   const { state } = useContext(StoreContext);
-  console.log("from  id.js", state.coffeeStores);
+  // console.log("from  id.js", state.coffeeStores);
 
   const [coffeeStoreFromDb, setCoffeeStoreFromDb] = useState({});
   const [vote, setVote] = useState(0);
@@ -64,13 +64,52 @@ const CoffeeStore = (props) => {
       }
     }
   };
-
   useEffect(() => {
     setCoffeeStoreFromDb(destructureFrom());
-  }, []);
-  // console.log(coffeeStoreFromDb);
+  }, [id]);
+  console.log("db data", coffeeStoreFromDb);
 
+  const handleCreateCoffeeStore = async () => {
+    const coffeeData = coffeeStoreFromDb;
+    try {
+      const data = {
+        id: coffeeData?.id,
+        name: coffeeData?.name,
+        address: coffeeData?.address,
+        region:
+          coffeeData?.location ||
+          coffeeData?.region ||
+          coffeeData?.formatted_address,
+        vote: 0,
+        imgUrl: coffeeData?.imgUrl,
+      };
+      console.log("heyyy", coffeeData);
+      const response = await fetch("/api/createCoffeeStore", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const coffeeStoreFromDb = await response.json();
+      console.log("data", data);
+    } catch (err) {
+      console.error("Error creating coffee store", err);
+    }
+  };
+
+  useEffect(() => {
+    if (coffeeStoreFromDb) {
+      handleCreateCoffeeStore(coffeeStoreFromDb);
+    } else {
+      handleCreateCoffeeStore(coffeeStoreFromDb);
+    }
+  }, [id]);
+
+  const [voting, setVotingCount] = useState(1);
   const handleUpvoteButton = () => {
+    let count = voting + 1;
+    setVotingCount(count);
     console.log("handle upvote");
   };
   if (router.isFallback) {
@@ -112,20 +151,29 @@ const CoffeeStore = (props) => {
               height="24"
               alt="location"
             ></Image>
-            {/* <p className={styles.text}>{location.formatted_address || ""}</p> */}
+            <p className={styles.text}>
+              {location?.address ||
+                location?.formatted_address ||
+                location?.location}
+            </p>
           </div>
 
-          {/* {location.locality && (
+          {location?.locality && (
             <div className={styles.iconWrapper}>
               <Image
                 src="/static/icons/nearMe.svg"
                 width="24"
                 height="24"
-                alt=""
+                alt="near me"
               ></Image>
-              <p className={styles.text}>{location.locality}</p>
+              <p className={styles.text}>
+                {" "}
+                {location?.location ||
+                  location?.region ||
+                  location?.formatted_address}
+              </p>
             </div>
-          )} */}
+          )}
           <div className={styles.iconWrapper}>
             <Image
               src="/static/icons/star.svg"
@@ -133,7 +181,7 @@ const CoffeeStore = (props) => {
               height="24"
               alt="star"
             ></Image>
-            <p className={styles.text}>1</p>
+            <p className={styles.text}>{voting}</p>
           </div>
           <button className={styles.upvoteButton} onClick={handleUpvoteButton}>
             Up vote!
