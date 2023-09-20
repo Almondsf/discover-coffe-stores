@@ -43,7 +43,6 @@ const CoffeeStore = (props) => {
   const { id } = router.query;
 
   const { state } = useContext(StoreContext);
-  // console.log("from  id.js", state.coffeeStores);
 
   const [coffeeStoreFromDb, setCoffeeStoreFromDb] = useState({});
   const [vote, setVote] = useState(0);
