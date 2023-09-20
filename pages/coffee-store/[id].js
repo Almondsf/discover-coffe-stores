@@ -64,26 +64,32 @@ const CoffeeStore = (props) => {
       }
     }
   };
+
   useEffect(() => {
     setCoffeeStoreFromDb(destructureFrom());
-  }, [id]);
-  console.log("db data", coffeeStoreFromDb);
+  }, [id, state.coffeeStores]);
+
+  useEffect(() => {
+    if (coffeeStoreFromDb && Object.keys(coffeeStoreFromDb).length > 0) {
+      handleCreateCoffeeStore(coffeeStoreFromDb);
+    }
+  }, [coffeeStoreFromDb]);
 
   const handleCreateCoffeeStore = async () => {
     const coffeeData = coffeeStoreFromDb;
     try {
       const data = {
-        id: coffeeData?.id,
+        id: coffeeData?.fsq_id,
         name: coffeeData?.name,
-        address: coffeeData?.address,
+        address: coffeeData?.location.address,
         region:
-          coffeeData?.location ||
+          coffeeData?.location?.region ||
           coffeeData?.region ||
           coffeeData?.formatted_address,
         vote: 0,
         imgUrl: coffeeData?.imgUrl,
       };
-      console.log("heyyy", coffeeData);
+
       const response = await fetch("/api/createCoffeeStore", {
         method: "POST",
         headers: {
@@ -91,20 +97,13 @@ const CoffeeStore = (props) => {
         },
         body: JSON.stringify(data),
       });
-      const coffeeStoreFromDb = await response.json();
-      console.log("data", data);
+
+      const responseData = await response.json();
+      console.log("Response =>", responseData);
     } catch (err) {
       console.error("Error creating coffee store", err);
     }
   };
-
-  useEffect(() => {
-    if (coffeeStoreFromDb) {
-      handleCreateCoffeeStore(coffeeStoreFromDb);
-    } else {
-      handleCreateCoffeeStore(coffeeStoreFromDb);
-    }
-  }, [id]);
 
   const [voting, setVotingCount] = useState(1);
   const handleUpvoteButton = () => {
